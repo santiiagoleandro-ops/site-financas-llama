@@ -17,7 +17,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Setup Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: "3.11"
 
@@ -45,8 +45,9 @@ jobs:
     - name: Fail if site empty
       run: test -f site/output/index.html
 
+    # NOVA VERSÃO — Compatível com Upload Artifact v4
     - name: Upload artifact for Pages
-      uses: actions/upload-pages-artifact@v2
+      uses: actions/upload-pages-artifact@v3
       with:
         path: site/output
 
@@ -57,8 +58,10 @@ jobs:
       pages: write
       id-token: write
     steps:
+
+      # NOVA VERSÃO — Compatível com Upload/Download v4
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
 
   notify:
     needs: [build, deploy]
@@ -76,7 +79,7 @@ jobs:
           fi
           MSG="Site build: ${STATUS}. Repo: $GITHUB_REPOSITORY. Run: $GITHUB_RUN_ID"
           if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
-            curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" -d chat_id="${TELEGRAM_CHAT_ID}" -d text="$MSG"
+            curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+              -d chat_id="${TELEGRAM_CHAT_ID}" -d text="$MSG"
           else
             echo "Telegram secrets not set; skipping notification."
-          fi
