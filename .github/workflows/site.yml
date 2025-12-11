@@ -1,0 +1,82 @@
+name: Build & Publish Site (HuggingFace LLaMA)
+
+on:
+  schedule:
+    - cron: "0 10 * * *"
+    - cron: "0 16 * * *"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      TZ: 'America/Sao_Paulo'
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+
+    - name: Install deps
+      run: |
+        pip install markdown jinja2 pyyaml pytrends requests python-frontmatter
+
+    - name: Check HUGGINGFACE_API_KEY
+      run: |
+        if [ -z "${{ secrets.HUGGINGFACE_API_KEY }}" ]; then
+          echo "HUGGINGFACE_API_KEY is required. Add it in repository secrets." && exit 1
+        fi
+
+    - name: Collect trending
+      run: python scripts/collect_trending.py
+
+    - name: Generate articles (HuggingFace)
+      env:
+        HUGGINGFACE_API_KEY: ${{ secrets.HUGGINGFACE_API_KEY }}
+      run: python scripts/generate_article.py --count 2
+
+    - name: Build static site
+      run: python scripts/site_generator.py
+
+    - name: Fail if site empty
+      run: test -f site/output/index.html
+
+    - name: Upload artifact for Pages
+      uses: actions/upload-pages-artifact@v2
+      with:
+        path: site/output
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v2
+
+  notify:
+    needs: [build, deploy]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Send Telegram notification on failure/success
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          STATUS="success"
+          if [ "${{ needs.build.result }}" != "success" ] || [ "${{ needs.deploy.result }}" != "success" ]; then
+            STATUS="failure"
+          fi
+          MSG="Site build: ${STATUS}. Repo: $GITHUB_REPOSITORY. Run: $GITHUB_RUN_ID"
+          if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
+            curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" -d chat_id="${TELEGRAM_CHAT_ID}" -d text="$MSG"
+          else
+            echo "Telegram secrets not set; skipping notification."
+          fi
