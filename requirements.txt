@@ -1,6 +1,0 @@
-requests
-pytrends
-markdown
-jinja2
-pyyaml
-python-frontmatter
