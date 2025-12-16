@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>{{ title }}</title>
+<meta name="description" content="{{ description }}"/>
+<link rel="icon" href="/site/assets/img/favicon.svg" type="image/svg+xml"/>
+<link rel="stylesheet" href="/site/assets/css/theme.css"/>
+</head>
+<body>
+<header>
+  <div class="container" style="display:flex;align-items:center;">
+    <div class="brand">
+      <!-- inline SVG logo -->
+      <img src="/site/assets/img/logo.svg" alt="Logo" style="height:42px"/>
+      <div style="display:flex;flex-direction:column;">
+        <strong style="font-size:16px;color:white">Finanças & Invest.</strong>
+        <small style="color:rgba(255,255,255,0.85)">Conteúdo diário automatizado</small>
+      </div>
+    </div>
+    <nav aria-label="main navigation">
+      <a href="/index.html">Início</a>
+      <a href="/rss.xml">RSS</a>
+      <a href="/sitemap.xml">Sitemap</a>
+      <a href="/contact.html" style="margin-left:18px" class="cta">Assine grátis</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container" id="content">
+{{ content }}
+</main>
+
+<footer>
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap">
+      <div>© {{ year }} Finanças & Investimentos. Conteúdo automatizado.</div>
+      <div style="color:var(--muted)">Criado para divulgação educacional — não é recomendação de investimento.</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
