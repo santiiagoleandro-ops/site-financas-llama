@@ -1,17 +1,23 @@
 <div class="hero">
   <div class="main-card card">
     <div style="display:flex;flex-direction:column;gap:12px;">
-      <img src="/site/assets/img/hero.jpg" alt="destaque"/>
+      
+      <!-- caminho correto a partir de site/output/ -->
+      <img src="../assets/img/hero.jpg" alt="destaque"/>
+
       <h2 style="font-size:20px;margin-top:6px">Últimos artigos</h2>
       <p class="meta">Publicados automaticamente com LLaMA 3.1</p>
+
       <div class="post-list">
         {{ posts }}
       </div>
     </div>
   </div>
+
   <aside class="card">
     <h3>Em destaque</h3>
     <p class="meta">Tópicos em alta e recomendações</p>
+
     <div style="margin-top:12px">
       <ul>
         <li><a href="#">Selic: impacto em 3 minutos</a></li>
