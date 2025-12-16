@@ -29,8 +29,10 @@ def render_page(content, title, description):
 
 def build_posts():
     posts = []
+
     for md in sorted(POSTS_DIR.glob("*.md")):
         raw = md.read_text(encoding="utf-8")
+
         import re, yaml
         meta_raw = re.findall(r"^---(.*?)---", raw, re.S)[0]
         body_md = re.sub(r"^---(.*?)---", "", raw, flags=re.S).strip()
@@ -39,6 +41,7 @@ def build_posts():
         html_body = markdown.markdown(body_md, extensions=["fenced_code", "toc"])
 
         slug = meta.get("slug", md.stem)
+
         html = render_page(
             load_template("post.html").render(
                 title=meta["title"],
@@ -58,21 +61,29 @@ def build_posts():
             "slug": slug,
             "date": meta["date"]
         })
+
     return posts
 
 def build_index(posts):
     cards = []
+
     for p in sorted(posts, key=lambda x: x["date"], reverse=True):
         cards.append(
             f"<article class='post-card'>"
-            f"<h3><a href='/{p['slug']}.html'>{p['title']}</a></h3>"
+            f"<h3><a href='{p['slug']}.html'>{p['title']}</a></h3>"
             f"<p>{p['excerpt']}</p>"
             f"<div class='meta'>{p['date']}</div>"
             f"</article>"
         )
 
     inner = load_template("index.html").render(posts="\n".join(cards))
-    html = render_page(inner, "Início", "Conteúdo diário sobre finanças e investimentos")
+
+    html = render_page(
+        inner,
+        "Início",
+        "Conteúdo diário sobre finanças e investimentos"
+    )
+
     (OUT_DIR / "index.html").write_text(html, encoding="utf-8")
 
 def build_extras(posts):
@@ -81,19 +92,24 @@ def build_extras(posts):
         "https://santiiagoleandro-ops.github.io/site-financas-llama"
     )
 
+    # robots.txt
     (OUT_DIR / "robots.txt").write_text(
         f"User-agent: *\nAllow: /\n\nSitemap: {base}/sitemap.xml",
         encoding="utf-8"
     )
 
+    # sitemap.xml
     sitemap = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
         f"<url><loc>{base}/</loc></url>"
     ]
+
     for p in posts:
         sitemap.append(f"<url><loc>{base}/{p['slug']}.html</loc></url>")
+
     sitemap.append("</urlset>")
+
     (OUT_DIR / "sitemap.xml").write_text("\n".join(sitemap), encoding="utf-8")
 
 def main():
@@ -101,6 +117,7 @@ def main():
     posts = build_posts()
     build_index(posts)
     build_extras(posts)
+    print("Site gerado com sucesso:", len(posts), "posts")
 
 if __name__ == "__main__":
     main()
