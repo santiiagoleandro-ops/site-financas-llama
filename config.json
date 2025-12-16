@@ -1,6 +1,0 @@
-{
-  "domain": "https://seusitefinanceiro.com",
-  "cloudflare_beacon_token": "COLOQUE_SEU_TOKEN_AQUI",
-  "google_analytics_id": "G-XXXXXXXXXX",
-  "huggingface_model": "meta-llama/Llama-3.1-8B-Instruct"
-}
