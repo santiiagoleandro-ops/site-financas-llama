@@ -1,1 +1,7 @@
-<svg xmlns='http://www.w3.org/2000/svg' width='120' height='40'><text x='0' y='30'>LOGO</text></svg>
+<svg width="220" height="40" viewBox="0 0 220 40" xmlns="http://www.w3.org/2000/svg">
+  <rect width="40" height="40" rx="8" fill="#0b2c4a"/>
+  <text x="20" y="26" text-anchor="middle" font-size="20" fill="#ffffff" font-family="Arial, Helvetica, sans-serif">B</text>
+  <text x="55" y="26" font-size="20" fill="#0b2c4a" font-family="Arial, Helvetica, sans-serif">
+    Bolso no Azul
+  </text>
+</svg>
