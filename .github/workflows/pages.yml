@@ -17,19 +17,22 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install markdown jinja2 pyyaml
+        run: |
+          pip install --upgrade pip
+          pip install markdown jinja2 pyyaml
 
-      - name: Build site
+      - name: Build static site
         run: python scripts/site_generator.py
 
       - name: Upload Pages artifact
@@ -43,6 +46,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
