@@ -32,7 +32,7 @@ def build():
     DIST.mkdir()
 
     # Copia assets
-    shutil.copytree(ASSETS, DIST, dirs_exist_ok=True)
+    shutil.copytree(ASSETS, DIST / "assets", dirs_exist_ok=True)
 
     post_template = load_template("post.html")
     index_template = load_template("index.html")
